@@ -85,8 +85,8 @@ window.addEventListener('resize', ajustarEscala);
 async function init() {
   try {
     const [configRes, partRes] = await Promise.all([
-      fetch('/api/config'),
-      fetch('/api/participantes'),
+      fetch('./api/config'),
+      fetch('./api/participantes'),
     ]);
     STATE.config = await configRes.json();
     STATE.participantes = await partRes.json();
