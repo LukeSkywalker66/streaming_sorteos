@@ -1,0 +1,315 @@
+/* ═══════════════════════════════════════════════
+   ESTILO SORTEO - BROADCAST VERTICAL (1080x1920)
+   Tema oscuro, acentos neón, estilo TV en vivo.
+   Sorteo detallado: 4to → 1er premio.
+   ═══════════════════════════════════════════════ */
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #111122;
+  --bg-card: #161630;
+  --accent-neon-cyan: #00f0ff;
+  --accent-neon-magenta: #ff00aa;
+  --accent-neon-gold: #ffd700;
+  --accent-neon-green: #00ff88;
+  --text-primary: #e8e8f0;
+  --text-secondary: #8888aa;
+  --text-muted: #555577;
+  --overlay-bg: rgba(0, 0, 0, 0.88);
+  --glow-cyan: 0 0 30px rgba(0, 240, 255, 0.4), 0 0 60px rgba(0, 240, 255, 0.15);
+  --glow-magenta: 0 0 30px rgba(255, 0, 170, 0.4), 0 0 60px rgba(255, 0, 170, 0.15);
+  --glow-gold: 0 0 30px rgba(255, 215, 0, 0.4), 0 0 60px rgba(255, 215, 0, 0.15);
+  --font-display: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'Consolas', 'Courier New', monospace;
+}
+
+html, body {
+  width: 100vw; height: 100vh; overflow: hidden; background: #000;
+  color: var(--text-primary); font-family: var(--font-display);
+  -webkit-font-smoothing: antialiased; user-select: none;
+  display: flex; justify-content: center; align-items: center;
+}
+
+/* --- App escalado --- */
+.app {
+  position: relative; width: 1080px; height: 1920px; overflow: hidden; flex-shrink: 0;
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(0,240,255,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 80%, rgba(255,0,170,0.04) 0%, transparent 50%),
+    var(--bg-primary);
+  transform-origin: center center;
+}
+
+/* --- Logo centrado --- */
+.logo {
+  position: absolute; top: 40px; left: 50%; transform: translateX(-50%);
+  max-width: 280px; max-height: 100px; width: auto; height: auto; z-index: 100;
+  filter: drop-shadow(0 0 18px rgba(0,0,0,0.7)); opacity: 0.92;
+  transition: opacity 0.5s ease;
+}
+.logo:hover { opacity: 1; }
+
+/* --- Fases comunes --- */
+.fase {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  transition: opacity 0.8s cubic-bezier(0.4,0,0.2,1), transform 0.8s cubic-bezier(0.4,0,0.2,1);
+}
+.fase.hidden { opacity: 0; pointer-events: none; transform: scale(1.03); }
+
+/* ═══════════════════════════════════════════════
+   FASE 1 - ESPERA
+   ═══════════════════════════════════════════════ */
+.fase-espera { gap: 40px; padding: 140px 60px 80px; justify-content: center; }
+
+.flyer-carousel {
+  position: relative; width: 85%; max-width: 900px; aspect-ratio: 4/5; flex-shrink: 0;
+}
+.flyer {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain;
+  border-radius: 24px;
+  box-shadow: 0 0 60px rgba(0,240,255,0.2), 0 20px 80px rgba(0,0,0,0.6);
+  transition: opacity 1s ease-in-out;
+}
+.flyer-active { opacity: 1; z-index: 2; }
+.flyer-next   { opacity: 0; z-index: 1; }
+
+.contador {
+  font-family: var(--font-mono); font-size: 180px; font-weight: 900; letter-spacing: 8px;
+  color: var(--accent-neon-cyan); text-shadow: var(--glow-cyan); line-height: 1;
+  animation: contadorPulse 1s ease-in-out infinite;
+}
+@keyframes contadorPulse {
+  0%,100% { text-shadow: 0 0 30px rgba(0,240,255,0.4), 0 0 60px rgba(0,240,255,0.15); }
+  50% { text-shadow: 0 0 50px rgba(0,240,255,0.6), 0 0 100px rgba(0,240,255,0.25); }
+}
+.contador.urgente {
+  color: #ff3355;
+  text-shadow: 0 0 30px rgba(255,50,80,0.5), 0 0 60px rgba(255,50,80,0.2);
+  animation: urgentePulse 0.5s ease-in-out infinite;
+}
+@keyframes urgentePulse {
+  0%,100% { transform: scale(1); } 50% { transform: scale(1.02); }
+}
+
+.hora-objetivo {
+  font-size: 36px; color: var(--accent-neon-gold);
+  text-shadow: 0 0 20px rgba(255,215,0,0.3); letter-spacing: 3px; font-weight: 600;
+}
+.sub-texto {
+  font-size: 42px; color: var(--text-secondary); letter-spacing: 4px; text-transform: uppercase;
+  animation: fadeInOut 2s ease-in-out infinite;
+}
+@keyframes fadeInOut {
+  0%,100% { opacity: 0.5; } 50% { opacity: 1; }
+}
+
+/* ═══════════════════════════════════════════════
+   FASE 2 - SORTEO (pantallas encadenadas)
+   ═══════════════════════════════════════════════ */
+.fase-sorteo {
+  gap: 0; padding: 0; justify-content: center; align-items: center;
+}
+
+/* --- Pantallas del sorteo (genérico) --- */
+.sorteo-screen {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.175,0.885,0.32,1.275);
+}
+.sorteo-screen.hidden { opacity: 0; pointer-events: none; transform: scale(1.05); }
+
+/* --- Screen 0: ¡ATENTOS! --- */
+.screen-atentos { gap: 30px; }
+.atentos-texto {
+  font-size: 110px; font-weight: 900; letter-spacing: 12px; color: var(--accent-neon-gold);
+  text-shadow: var(--glow-gold);
+  animation: atentosBoom 0.6s ease-out;
+}
+.atentos-sub {
+  font-size: 52px; font-weight: 700; color: var(--text-primary); letter-spacing: 6px;
+  animation: atentosBoom 0.6s ease-out 0.2s both;
+}
+@keyframes atentosBoom {
+  from { opacity: 0; transform: scale(0.5); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* --- Screen 1: Anuncio del premio --- */
+.screen-anuncio { gap: 30px; }
+.anuncio-numero {
+  font-size: 90px; font-weight: 900; letter-spacing: 8px; color: var(--accent-neon-magenta);
+  text-shadow: var(--glow-magenta);
+  animation: anuncioIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275);
+}
+.anuncio-nombre-premio {
+  font-size: 80px; font-weight: 900; letter-spacing: 4px; color: var(--accent-neon-gold);
+  text-shadow: var(--glow-gold); text-align: center; padding: 0 60px; line-height: 1.2;
+  animation: anuncioIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275) 0.15s both;
+}
+@keyframes anuncioIn {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Screen 2: Flyer del premio --- */
+.screen-flyer { gap: 30px; padding: 80px; }
+.flyer-premio-img {
+  width: 75%; max-width: 800px; max-height: 1100px; object-fit: contain;
+  border-radius: 28px;
+  box-shadow: 0 0 70px rgba(255,215,0,0.3), 0 20px 90px rgba(0,0,0,0.7);
+  animation: flyerIn 0.6s cubic-bezier(0.175,0.885,0.32,1.275);
+}
+@keyframes flyerIn {
+  from { opacity: 0; transform: scale(0.85); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* --- Screen 3: ¡A SORTEAR! --- */
+.screen-accion { gap: 0; }
+.accion-texto {
+  font-size: 120px; font-weight: 900; letter-spacing: 14px; color: var(--accent-neon-cyan);
+  text-shadow: var(--glow-cyan);
+  animation: accionPump 0.4s ease-out;
+}
+@keyframes accionPump {
+  0%   { opacity: 0; transform: scale(0.3); }
+  60%  { opacity: 1; transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+/* --- Screen 4: Ruleta --- */
+.screen-ruleta { gap: 40px; padding: 100px 80px 80px; }
+
+.premio-label-ruleta {
+  font-size: 34px; color: var(--accent-neon-magenta); letter-spacing: 8px;
+  text-transform: uppercase; text-shadow: var(--glow-magenta);
+}
+.premio-nombre-ruleta {
+  font-size: 60px; font-weight: 900; color: var(--accent-neon-gold);
+  text-shadow: var(--glow-gold); letter-spacing: 2px; line-height: 1.2; padding: 0 40px;
+}
+
+.ruleta-box {
+  position: relative; width: 750px; padding: 60px 60px;
+  background: var(--bg-card); border: 4px solid var(--accent-neon-cyan); border-radius: 30px;
+  text-align: center;
+  box-shadow: inset 0 0 60px rgba(0,240,255,0.08), 0 0 80px rgba(0,240,255,0.2);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.ruleta-box.spinning {
+  border-color: var(--accent-neon-magenta);
+  box-shadow: inset 0 0 60px rgba(255,0,170,0.08), 0 0 80px rgba(255,0,170,0.3);
+  animation: boxShake 0.15s ease-in-out infinite;
+}
+@keyframes boxShake {
+  0%,100% { transform: translate(0,0); }
+  25% { transform: translate(-2px,1px); }
+  50% { transform: translate(2px,-1px); }
+  75% { transform: translate(-1px,-2px); }
+}
+.ruleta-box.winner-stop {
+  border-color: var(--accent-neon-gold);
+  box-shadow: inset 0 0 80px rgba(255,215,0,0.12), 0 0 120px rgba(255,215,0,0.4);
+  animation: none;
+}
+
+.ruleta-numero {
+  font-family: var(--font-mono); font-size: 110px; font-weight: 900;
+  color: var(--accent-neon-cyan); text-shadow: var(--glow-cyan); line-height: 1; margin-bottom: 16px;
+}
+.ruleta-numero.blur { filter: blur(2px); }
+
+.ruleta-nombre {
+  font-size: 60px; font-weight: 700; color: var(--text-primary); letter-spacing: 2px;
+  line-height: 1.2; min-height: 76px;
+}
+.ruleta-nombre.blur { filter: blur(1px); color: var(--text-secondary); }
+
+/* Overlay ganador */
+.ganador-overlay {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%,-50%) scale(0);
+  background: var(--overlay-bg); border: 4px solid var(--accent-neon-gold); border-radius: 30px;
+  padding: 60px 80px; text-align: center; z-index: 20;
+  box-shadow: 0 0 100px rgba(255,215,0,0.5), 0 30px 100px rgba(0,0,0,0.8);
+  transition: transform 0.5s cubic-bezier(0.175,0.885,0.32,1.275);
+}
+.ganador-overlay.visible { transform: translate(-50%,-50%) scale(1); }
+.ganador-titulo {
+  font-size: 52px; font-weight: 900; color: var(--accent-neon-gold);
+  text-shadow: var(--glow-gold); margin-bottom: 30px; letter-spacing: 6px;
+}
+.ganador-numero {
+  font-family: var(--font-mono); font-size: 100px; font-weight: 900; color: #fff;
+  text-shadow: 0 0 40px rgba(255,255,255,0.5); margin-bottom: 10px;
+}
+.ganador-nombre { font-size: 56px; font-weight: 700; color: var(--text-primary); margin-bottom: 20px; }
+.ganador-premio {
+  font-size: 38px; font-weight: 600; color: var(--accent-neon-cyan);
+  text-shadow: var(--glow-cyan); letter-spacing: 2px;
+}
+
+/* --- Screen 5: ¡Siguiente premio! --- */
+.screen-siguiente { gap: 20px; }
+.siguiente-texto {
+  font-size: 80px; font-weight: 900; letter-spacing: 10px; color: var(--accent-neon-magenta);
+  text-shadow: var(--glow-magenta);
+  animation: siguienteBounce 0.5s ease-out;
+}
+@keyframes siguienteBounce {
+  0%   { opacity: 0; transform: scale(0.5); }
+  70%  { transform: scale(1.05); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* --- Progreso (siempre abajo) --- */
+.sorteo-progreso {
+  position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%);
+  font-size: 30px; color: var(--text-muted); letter-spacing: 4px; text-transform: uppercase; z-index: 30;
+}
+.sorteo-progreso span { color: var(--accent-neon-magenta); font-weight: 700; }
+
+/* ═══════════════════════════════════════════════
+   FASE 3 - FINAL
+   ═══════════════════════════════════════════════ */
+.fase-final { gap: 40px; padding: 80px 60px; justify-content: flex-start; padding-top: 140px; }
+.final-titulo {
+  font-size: 72px; font-weight: 900; color: var(--accent-neon-gold);
+  text-shadow: var(--glow-gold); letter-spacing: 4px; text-align: center; line-height: 1.2;
+}
+.final-subtitulo { font-size: 38px; color: var(--text-secondary); letter-spacing: 4px; margin-bottom: 20px; }
+
+.resumen-ganadores {
+  display: flex; flex-direction: column; gap: 30px; width: 100%; max-width: 900px;
+}
+.resumen-item {
+  display: flex; align-items: center; gap: 30px;
+  background: var(--bg-card); border: 2px solid rgba(255,255,255,0.08); border-radius: 20px;
+  padding: 30px 45px;
+  animation: slideIn 0.6s cubic-bezier(0.175,0.885,0.32,1.275) both;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+}
+.resumen-item:nth-child(1) { animation-delay: 0.1s; }
+.resumen-item:nth-child(2) { animation-delay: 0.25s; }
+.resumen-item:nth-child(3) { animation-delay: 0.4s; }
+.resumen-item:nth-child(4) { animation-delay: 0.55s; }
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.resumen-emoji { font-size: 60px; flex-shrink: 0; }
+.resumen-info { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
+.resumen-premio {
+  font-size: 30px; font-weight: 700; color: var(--accent-neon-cyan);
+  text-shadow: 0 0 20px rgba(0,240,255,0.3); letter-spacing: 1px;
+}
+.resumen-ganador-numero { font-family: var(--font-mono); font-size: 26px; color: var(--text-muted); }
+.resumen-ganador-nombre { font-size: 42px; font-weight: 700; color: var(--text-primary); }
+
+/* ═══════════════════════════════════════════════
+   UTILIDADES
+   ═══════════════════════════════════════════════ */
+.hidden { display: none !important; }

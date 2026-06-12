@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Sorteo en Vivo</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1" defer></script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+
+  <!-- ═══════════ APP PRINCIPAL (1080 x 1920) ═══════════ -->
+  <div id="app" class="app">
+
+    <!-- Logo siempre visible -->
+    <img id="logo" class="logo" src="" alt="Logo">
+
+    <!-- ═══════ FASE 1: PANTALLA DE ESPERA ═══════ -->
+    <div id="fase-espera" class="fase fase-espera">
+      <div class="flyer-carousel">
+        <img id="flyer-a" class="flyer flyer-active" src="" alt="Flyer">
+        <img id="flyer-b" class="flyer flyer-next" src="" alt="Flyer">
+      </div>
+      <div id="contador" class="contador">--:--</div>
+      <div id="hora-objetivo" class="hora-objetivo hidden"></div>
+      <p class="sub-texto">El sorteo comienza en breve...</p>
+    </div>
+
+    <!-- ═══════ FASE 2: SORTEO ═══════ -->
+    <div id="fase-sorteo" class="fase fase-sorteo hidden">
+
+      <!-- Screen 0: ¡ATENTOS! (solo antes del 4to premio) -->
+      <div id="screen-atentos" class="sorteo-screen screen-atentos hidden">
+        <div class="atentos-texto">¡ATENTOS!</div>
+        <div class="atentos-sub">Comienza el sorteo</div>
+      </div>
+
+      <!-- Screen 1: Anuncio del premio -->
+      <div id="screen-anuncio" class="sorteo-screen screen-anuncio hidden">
+        <div id="anuncio-numero" class="anuncio-numero">4to PREMIO</div>
+        <div id="anuncio-nombre" class="anuncio-nombre-premio">---</div>
+      </div>
+
+      <!-- Screen 2: Flyer del premio -->
+      <div id="screen-flyer" class="sorteo-screen screen-flyer hidden">
+        <img id="flyer-premio" class="flyer-premio-img" src="" alt="Flyer del Premio">
+      </div>
+
+      <!-- Screen 3: ¡A SORTEAR! -->
+      <div id="screen-accion" class="sorteo-screen screen-accion hidden">
+        <div class="accion-texto">¡A SORTEAR!</div>
+      </div>
+
+      <!-- Screen 4: Ruleta + Ganador -->
+      <div id="screen-ruleta" class="sorteo-screen screen-ruleta hidden">
+        <div class="premio-label-ruleta">PRÓXIMO PREMIO</div>
+        <div id="premio-nombre-ruleta" class="premio-nombre-ruleta">---</div>
+        <div id="ruleta-box" class="ruleta-box">
+          <div id="ruleta-numero" class="ruleta-numero">0000</div>
+          <div id="ruleta-nombre" class="ruleta-nombre">????</div>
+        </div>
+        <div id="ganador-overlay" class="ganador-overlay hidden">
+          <div class="ganador-titulo">🎉 ¡GANADOR! 🎉</div>
+          <div id="ganador-numero" class="ganador-numero">0000</div>
+          <div id="ganador-nombre" class="ganador-nombre">Nombre</div>
+          <div id="ganador-premio" class="ganador-premio">Premio</div>
+        </div>
+      </div>
+
+      <!-- Screen 5: ¡Siguiente premio! -->
+      <div id="screen-siguiente" class="sorteo-screen screen-siguiente hidden">
+        <div class="siguiente-texto">¡SIGUIENTE PREMIO!</div>
+      </div>
+
+      <!-- Progreso siempre visible -->
+      <div id="sorteo-progreso" class="sorteo-progreso">
+        Premio <span id="progreso-actual">1</span> de <span id="progreso-total">4</span>
+      </div>
+    </div>
+
+    <!-- ═══════ FASE 3: FINAL ═══════ -->
+    <div id="fase-final" class="fase fase-final hidden">
+      <div class="final-titulo">🏆 ¡SORTEO FINALIZADO! 🏆</div>
+      <div class="final-subtitulo">Felicitaciones a los ganadores</div>
+      <div id="resumen-ganadores" class="resumen-ganadores"></div>
+    </div>
+
+  </div>
+
+</body>
+</html>
